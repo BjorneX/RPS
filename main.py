@@ -58,16 +58,22 @@ Field = [0,0,0,0,
          0,0,0,0,
          0,0,0,0,]
 
-# For  =0
+
+field_displayed = False
 
 RandomSquare = random.randint(0, len(Field) - 1)
 
 Field[RandomSquare] = 2
 
+game_activation = False
+
 #Visuals
 
+print("Press 'space' to display the field!\n")
+
+#3
+
 def output():
-    print("Press 'w' to display the field!\n")
 
     field_size = int(math.sqrt(len(Field)))
 
@@ -76,13 +82,18 @@ def output():
             print(Field[i+j], end=' ')
         print()
 
-def w_key(event):
-    if event.name == 'w':
-        output()
+#2
 
-window.title("Press 'w' to Display Field")
+def space_key(event):
+   global game_activation
+   if not game_activation:
+       game_activation = True
+       output()
 
-# Bind 'w' key event to w_key function
-keyboard.on_press_key('w', w_key)
+#1
+
+# Bind the 'space' key to the space_key function
+window.bind('<space>', space_key)
+
 
 window.mainloop()
