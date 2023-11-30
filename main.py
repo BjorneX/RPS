@@ -49,31 +49,43 @@ window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 # Center the Text widget
 output_text.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-
+# Eventually add area of boxes option and starting number
 
 #Variables
+
+Score = 0
 
 Field = [0,0,0,0,
          0,0,0,0,
          0,0,0,0,
          0,0,0,0,]
 
-
-field_displayed = False
-
-RandomSquare = random.randint(0, len(Field) - 1)
-
-Field[RandomSquare] = 2
-
 game_activation = False
 
-#Visuals
+col = [False, False, False, False]
+row = [False, False, False, False]
 
-print("Press 'space' to display the field!\n")
+#Visuals (I legobitar)
 
-#3
+print("Press 'space' to start the game of 2048!\n")
+
+#while(Score!=2048):
+
+def Generate(): # Generera random 2a
+    global RandomSquare
+
+    RandomSquare = random.randint(0, len(Field)-1) 
+
+    if Field[RandomSquare] == 2:
+        RandomSquare = random.randint(0, len(Field)-1)
+
+    Field[RandomSquare] = 2
 
 def output():
+
+    # Fixa 2 vid start
+
+    output_text.delete(1.0, tk.END)
 
     field_size = int(math.sqrt(len(Field)))
 
@@ -82,18 +94,53 @@ def output():
             print(Field[i+j], end=' ')
         print()
 
-#2
+def w_key(event):
+
+    global Determined_Square, RandomSquare #Hämta från global
+
+    output_text.delete(1.0, tk.END)
+
+    # Fixa kollision och andra 2ans rörelse
+
+
+    Determined_Square = int(RandomSquare % math.sqrt(len(Field)))
+
+    Field[RandomSquare] = 0 # Ta bort 2a
+
+    if Field[Determined_Square] == 2:
+        Field[Determined_Square] *= 2  # Multiply by 2
+        Generate()  # Generate a new 2 after multiplication
+        
+    else:
+        Field[RandomSquare] = 0
+        Field[Determined_Square] = 2
+        Generate()  # Generate a new RandomSquare
+
+    output() # Output the updated field
+
+
 
 def space_key(event):
    global game_activation
-   if not game_activation:
+   if not game_activation: # Fråga samuel, blir det inte true?
        game_activation = True
        output()
 
-#1
+def find_position(matrix, target):
+    row_size = int(math.sqrt(len(matrix))) # =4 
+    for i, num in enumerate(matrix): # Antalet element i matrix. i, num menas med att båda ska ++
+        if num == target: # t.ex om 0 == 2 vilket dock inte hade uppfyllt
+            row = i // row_size + 1
+            col = i % row_size + 1
+            print(f"{target} is at row {row} and column {col}")
+
+Generate(), Generate()
+
+# Function call to find the position of '2' in the matrix
+find_position(Field, Field[RandomSquare])
 
 # Bind the 'space' key to the space_key function
 window.bind('<space>', space_key)
-
+window.bind('<w>', w_key)
 
 window.mainloop()
